@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import duckdb as db
 import matplotlib.pyplot as plt
-import seaborn as sns
 import polars as pl
 import plotly.express as px
 from matplotlib.patches import Patch
@@ -189,6 +188,7 @@ with tab10:
     fig=px.imshow(g)
     st.plotly_chart(fig, on_select="rerun")
     st.write("From the data, we can observe that the trips occur at 4 - 6 in the morning on week days while on weekends higher trip occurrence at later hours susch as 6 -8  but with less overall trips and gradually reduces during the day with the least trip occuring at weekday 18 hour. this imples that member of the workforce are goin to their palce of work at during the weekday and during the weekend citzens may be going to recreational activities ")
+
 
 
 #python -m streamlit run app.py
