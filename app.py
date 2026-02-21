@@ -7,19 +7,42 @@ import matplotlib.pyplot as plt
 import polars as pl
 import plotly.express as px
 from matplotlib.patches import Patch
-
+import requests
 
 st.set_page_config( page_title='NYC Taxi Dashboard', page_icon='taxi', layout='wide' ) 
 
 st.title('NYC Taxi Trip Dashboard') 
 
-@st.cache_data 
-def load_data(): 
-    df = pd.read_parquet("yellow_taxi_data.parquet")
-    return df
+#@st.cache_data 
+try:
+    local_filename = "yellow_taxi_data.parquet"
+    url ="https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-01.parquet"
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192): 
+                f.write(chunk)
+    print("yelllow completed")         
+except Exception as e:
+    print("\n the following error occured with downloading the parquet file: ", e)
 
-df= load_data()
-df2 = pd.read_csv("taxi_zone_data.csv")
+try:    
+    local_filename2 = "taxi_zone_data.csv"
+    url2 ="https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+    with requests.get(url2, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename2, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192): 
+                f.write(chunk)
+    print("zone completed") 
+except Exception as e:
+    print("\n the following error occured with downloading the parquet file: ", e)
+
+file = "yellow_taxi_data.parquet"
+df= pl.read_parquet(file)
+file2 = ("taxi_zone_data.csv")
+df2 = pl.read_csv(file2)
+
 tab1, tab2, tab3 ,tab4, tab5,tab6, tab7, tab8 ,tab9, tab10= st.tabs([" total trips", "average fare", "total revenue","average trip distance","average trip duration.","bar chart-total trip","line chart","bar graph","histogram","heatmap"])
 db = db.connect()
 
